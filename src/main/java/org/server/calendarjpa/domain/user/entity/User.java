@@ -1,6 +1,8 @@
 package org.server.calendarjpa.domain.user.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import org.server.calendarjpa.domain.schedule.entity.Schedule;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -8,6 +10,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
 
 @Entity
+@Getter
 @Table(name = "users")
 @EntityListeners(AuditingEntityListener.class)
 public class User {
@@ -23,11 +26,13 @@ public class User {
 
     protected User() {}
 
-    private User(String username, String password, String email, LocalDateTime createdDate, LocalDateTime lastModifiedDate) {
+    private User(String username, String password, String email) {
         this.username = username;
         this.password = password;
         this.email = email;
-        this.createdDate = createdDate;
-        this.lastModifiedDate = lastModifiedDate;
+    }
+
+    public static User of(String username, String password, String email) {
+        return new User(username, password, email);
     }
 }
