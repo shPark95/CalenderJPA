@@ -1,5 +1,6 @@
 package org.server.calendarjpa.domain.user.service;
 
+import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import org.server.calendarjpa.domain.user.dto.UserRequestDto;
 import org.server.calendarjpa.domain.user.dto.UserResponseDto;
@@ -16,6 +17,14 @@ public class UserService {
 
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
+    }
+
+    public UserResponseDto signup(UserRequestDto userRequestDto) {
+        if (userRepository.existsByEmail(userRequestDto.getEmail())) {
+            throw new IllegalArgumentException("Email already exists");
+        }
+        User user = User.of(userRequestDto.getUsername(), userRequestDto.getPassword(), userRequestDto.getEmail());
+        return new UserResponseDto(userRepository.save(user));
     }
 
     public UserResponseDto create(UserRequestDto userRequestDto) {
