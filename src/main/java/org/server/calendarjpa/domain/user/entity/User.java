@@ -8,6 +8,8 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -16,6 +18,8 @@ import java.time.LocalDateTime;
 public class User {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @OneToMany(mappedBy = "user")
+    private List<Schedule> schedules = new ArrayList<>();
     private String username;
     private String password;
     private String email;
