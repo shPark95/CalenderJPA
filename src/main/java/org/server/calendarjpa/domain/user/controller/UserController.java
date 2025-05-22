@@ -3,6 +3,7 @@ package org.server.calendarjpa.domain.user.controller;
 import org.server.calendarjpa.domain.user.dto.UserRequestDto;
 import org.server.calendarjpa.domain.user.dto.UserResponseDto;
 import org.server.calendarjpa.domain.user.service.UserService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,6 +17,10 @@ public class UserController {
         this.userService = userService;
     }
 
+    @PostMapping("/signup")
+    public ResponseEntity<UserResponseDto> signup(@RequestBody UserRequestDto userRequestDto) {
+        return ResponseEntity.ok(userService.signup(userRequestDto));
+    }
 
     @PostMapping("/users")
     public UserResponseDto create(@RequestBody UserRequestDto userRequestDto) {
