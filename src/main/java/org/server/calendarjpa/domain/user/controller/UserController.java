@@ -1,5 +1,6 @@
 package org.server.calendarjpa.domain.user.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.server.calendarjpa.domain.user.dto.UserRequestDto;
 import org.server.calendarjpa.domain.user.dto.UserResponseDto;
 import org.server.calendarjpa.domain.user.service.UserService;
@@ -15,6 +16,11 @@ public class UserController {
 
     public UserController(UserService userService) {
         this.userService = userService;
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<UserResponseDto> login(@RequestBody UserRequestDto userRequestDto, HttpServletRequest httpServeletRequest) {
+        return ResponseEntity.ok(userService.login(userRequestDto, httpServeletRequest));
     }
 
     @PostMapping("/signup")
