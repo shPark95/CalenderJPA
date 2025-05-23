@@ -2,11 +2,14 @@ package org.server.calendarjpa.domain.user.service;
 
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.servlet.http.HttpServletRequest;
 import org.server.calendarjpa.domain.user.dto.UserRequestDto;
 import org.server.calendarjpa.domain.user.dto.UserResponseDto;
 import org.server.calendarjpa.domain.user.entity.User;
 import org.server.calendarjpa.domain.user.repository.UserRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,6 +20,18 @@ public class UserService {
 
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
+    }
+
+    public UserResponseDto login(UserRequestDto userRequestDto, HttpServletRequest httpServletRequest) {
+        User user = userRepository.findByEmail(userRequestDto.getEmail()).orElseThrow(()-> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "사용자 정보가 일치하지 않습니다."));
+
+        if (!user.getPassword().equals(userRequestDto.getPassword())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "사용자 정보가 일치하지 않습니다.");
+        }
+
+        httpServletRequest.getSession().setAttribute("user", user.getId());
+
+        return new UserResponseDto(user);
     }
 
     public UserResponseDto signup(UserRequestDto userRequestDto) {
