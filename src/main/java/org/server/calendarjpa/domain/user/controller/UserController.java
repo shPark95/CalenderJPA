@@ -1,6 +1,7 @@
 package org.server.calendarjpa.domain.user.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import org.server.calendarjpa.domain.user.dto.UserRequestDto;
 import org.server.calendarjpa.domain.user.dto.UserResponseDto;
 import org.server.calendarjpa.domain.user.service.UserService;
@@ -24,7 +25,7 @@ public class UserController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<UserResponseDto> signup(@RequestBody UserRequestDto userRequestDto) {
+    public ResponseEntity<UserResponseDto> signup(@RequestBody @Valid UserRequestDto userRequestDto) {
         return ResponseEntity.ok(userService.signup(userRequestDto));
     }
 

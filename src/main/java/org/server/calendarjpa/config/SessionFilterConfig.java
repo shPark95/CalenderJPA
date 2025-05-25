@@ -1,6 +1,6 @@
 package org.server.calendarjpa.config;
 
-import org.server.calendarjpa.common.SessionAuthFilter;
+import org.server.calendarjpa.common.filter.SessionAuthFilter;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

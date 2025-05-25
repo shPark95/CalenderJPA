@@ -1,4 +1,4 @@
-package org.server.calendarjpa.common;
+package org.server.calendarjpa.common.filter;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
