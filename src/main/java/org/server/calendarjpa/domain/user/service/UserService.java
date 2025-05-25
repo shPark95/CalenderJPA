@@ -3,6 +3,7 @@ package org.server.calendarjpa.domain.user.service;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
+import org.server.calendarjpa.config.PasswordEncoder;
 import org.server.calendarjpa.domain.user.dto.UserRequestDto;
 import org.server.calendarjpa.domain.user.dto.UserResponseDto;
 import org.server.calendarjpa.domain.user.entity.User;
@@ -17,15 +18,17 @@ import java.util.stream.Collectors;
 @Service
 public class UserService {
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public UserResponseDto login(UserRequestDto userRequestDto, HttpServletRequest httpServletRequest) {
         User user = userRepository.findByEmail(userRequestDto.getEmail()).orElseThrow(()-> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "사용자 정보가 일치하지 않습니다."));
 
-        if (!user.getPassword().equals(userRequestDto.getPassword())) {
+        if (!passwordEncoder.matches(userRequestDto.getPassword(), user.getPassword())) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "사용자 정보가 일치하지 않습니다.");
         }
 
@@ -38,7 +41,10 @@ public class UserService {
         if (userRepository.existsByEmail(userRequestDto.getEmail())) {
             throw new IllegalArgumentException("Email already exists");
         }
-        User user = User.of(userRequestDto.getUsername(), userRequestDto.getPassword(), userRequestDto.getEmail());
+
+        String encodedPassword = passwordEncoder.encode(userRequestDto.getPassword());
+
+        User user = User.of(userRequestDto.getUsername(), encodedPassword, userRequestDto.getEmail());
         return new UserResponseDto(userRepository.save(user));
     }
 
