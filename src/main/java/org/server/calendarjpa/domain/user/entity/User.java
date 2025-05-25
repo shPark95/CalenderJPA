@@ -2,6 +2,7 @@ package org.server.calendarjpa.domain.user.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import org.server.calendarjpa.domain.comment.entity.Comment;
 import org.server.calendarjpa.domain.schedule.entity.Schedule;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -20,6 +21,8 @@ public class User {
     private Long id;
     @OneToMany(mappedBy = "user")
     private List<Schedule> schedules = new ArrayList<>();
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments = new ArrayList<>();
     private String username;
     private String password;
     private String email;
