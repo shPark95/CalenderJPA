@@ -1,5 +1,6 @@
 package org.server.calendarjpa.domain.schedule.controller;
 
+import org.springframework.data.domain.Page;
 import org.server.calendarjpa.domain.schedule.dto.ScheduleRequestDto;
 import org.server.calendarjpa.domain.schedule.dto.ScheduleResponseDto;
 import org.server.calendarjpa.domain.schedule.service.ScheduleService;
@@ -19,6 +20,13 @@ public class ScheduleController {
     @PostMapping("/schedules")
     public ScheduleResponseDto create(@RequestBody ScheduleRequestDto scheduleRequestDto) {
         return scheduleService.create(scheduleRequestDto);
+    }
+
+    @GetMapping("/schedules")
+    public Page<ScheduleResponseDto> getPagedSchedules(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "6") int size) {
+        return scheduleService.getPagedSchedules(page, size);
     }
 
     @GetMapping("/schedules")

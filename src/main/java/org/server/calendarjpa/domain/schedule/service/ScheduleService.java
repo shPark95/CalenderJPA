@@ -1,10 +1,13 @@
 package org.server.calendarjpa.domain.schedule.service;
 
-import jakarta.persistence.EntityNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.server.calendarjpa.domain.schedule.dto.ScheduleRequestDto;
 import org.server.calendarjpa.domain.schedule.dto.ScheduleResponseDto;
 import org.server.calendarjpa.domain.schedule.entity.Schedule;
 import org.server.calendarjpa.domain.schedule.repository.ScheduleRepository;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,6 +19,14 @@ public class ScheduleService {
 
     public ScheduleService(ScheduleRepository scheduleRepository) {
         this.scheduleRepository = scheduleRepository;
+    }
+
+    public Page<ScheduleResponseDto> getPagedSchedules(int page, int size) {
+        if (size <= 0) size = 6;
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Schedule> schedulesPage = scheduleRepository.findAllByOrderByLastModifiedDateDesc(pageable);
+
+        return schedulesPage.map(ScheduleResponseDto::new);
     }
 
     public ScheduleResponseDto create(ScheduleRequestDto scheduleRequestDto) {
